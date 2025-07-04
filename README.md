@@ -133,8 +133,8 @@ This command will:
 - Create all necessary tables (users, categories, products)
 - Insert sample categories (Electronics, Clothing, Books, Home & Garden, Sports)
 - Insert sample products with realistic data
-- Create default admin user: `admin@gmail.com` / `admin123`
-- Create default regular user: `user@gmail.com` / `user123`
+- Create default admin user: `admin@gmail.com` / `123456`
+- Create default regular user: `user@gmail.com` / `123456`
 
 ## 🏃‍♂️ Running the Application
 
