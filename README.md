@@ -141,7 +141,6 @@ This command will:
 ### 1. Start the Backend Server
 ```bash
 cd backend
-npm run build    # Build TypeScript
 npm start        # Start the server
 ```
 The backend will run on `http://localhost:5000`
