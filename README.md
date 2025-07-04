@@ -97,7 +97,7 @@ cd ../frontend
 npm install
 ```
 
-## 🗄️ Database Setup
+## 🗄️ Database Setup (just run command npm run init-db)
 
 ### 1. Create MySQL Database
 ```sql
@@ -133,15 +133,14 @@ This command will:
 - Create all necessary tables (users, categories, products)
 - Insert sample categories (Electronics, Clothing, Books, Home & Garden, Sports)
 - Insert sample products with realistic data
-- Create default admin user: `admin@gmail.com` / `admin123`
-- Create default regular user: `user@gmail.com` / `user123`
+- Create default admin user: `admin@gmail.com` / `123456`
+- Create default regular user: `user@gmail.com` / `123456`
 
 ## 🏃‍♂️ Running the Application
 
 ### 1. Start the Backend Server
 ```bash
 cd backend
-npm run build    # Build TypeScript
 npm start        # Start the server
 ```
 The backend will run on `http://localhost:5000`
@@ -156,8 +155,8 @@ The frontend will run on `http://localhost:3000`
 ### 3. Access the Application
 - Open your browser and navigate to `http://localhost:3000`
 - Login with default credentials:
-  - **Admin**: `admin@gmail.com` / `admin123`
-  - **User**: `user@gmail.com` / `user123`
+  - **Admin**: `admin@gmail.com` / `123456`
+  - **User**: `user@gmail.com` / `123456`
 
 ## 📁 Project Structure
 
