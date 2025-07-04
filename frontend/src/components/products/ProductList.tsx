@@ -62,9 +62,11 @@ const ProductList: React.FC = () => {
       if (confirmed) {
         showLoading('Deleting product...');
         await dispatch(deleteProduct(id)).unwrap();
-        // Refresh both products and categories
-        dispatch(fetchProductsAuto(PAGINATION_THRESHOLD));
-        dispatch(fetchCategories());
+        // Refresh both products and categories with slight delay
+        setTimeout(() => {
+          dispatch(fetchProductsAuto(PAGINATION_THRESHOLD));
+          dispatch(fetchCategories());
+        }, 100);
         hideLoading();
         showSuccess('Product deleted successfully!');
       }
