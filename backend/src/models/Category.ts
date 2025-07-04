@@ -105,6 +105,24 @@ class CategoryModel {
     }
   }
 
+  static async findByName(connection: PoolConnection, name: string, excludeId?: number): Promise<Category | null> {
+    try {
+      let query = 'SELECT id, name FROM categories WHERE LOWER(name) = LOWER(?)';
+      const params: any[] = [name];
+
+      if (excludeId) {
+        query += ' AND id != ?';
+        params.push(excludeId);
+      }
+
+      const [rows] = await connection.execute(query, params);
+      const categories = rows as Category[];
+      return categories.length > 0 ? categories[0] : null;
+    } catch (error) {
+      throw new Error('Database error while finding category by name');
+    }
+  }
+
   static async create(connection: PoolConnection, name: string): Promise<Category> {
     try {
       const [result] = await connection.execute('INSERT INTO categories (name) VALUES (?)', [name]);

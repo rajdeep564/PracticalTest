@@ -20,6 +20,7 @@ const ProductList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
   const { products, loading, error, pagination } = useSelector((state: RootState) => state.products);
+  console.log('products: ', products);
   const { isAdmin } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -61,7 +62,8 @@ const ProductList: React.FC = () => {
       if (confirmed) {
         showLoading('Deleting product...');
         await dispatch(deleteProduct(id)).unwrap();
-        // Refresh categories to update product counts
+        // Refresh both products and categories
+        dispatch(fetchProductsAuto(PAGINATION_THRESHOLD));
         dispatch(fetchCategories());
         hideLoading();
         showSuccess('Product deleted successfully!');
@@ -76,6 +78,10 @@ const ProductList: React.FC = () => {
     setEditingProduct(null);
     setShowModal(false);
     setPreSelectedCategoryId(null);
+    // Refetch products to ensure the list is up-to-date after create/update
+    setTimeout(() => {
+      dispatch(fetchProductsAuto(PAGINATION_THRESHOLD));
+    }, 100);
   };
 
   return (

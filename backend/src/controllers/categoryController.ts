@@ -38,7 +38,13 @@ const createCategory = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { name } = req.body;
     connection = await getConnection();
-    
+
+    // Check if category with this name already exists
+    const existingCategory = await CategoryModel.findByName(connection, name);
+    if (existingCategory) {
+      return res.status(400).json(errorResponse('Category with this name already exists'));
+    }
+
     const category = await CategoryModel.create(connection, name);
     res.status(201).json(successResponse(category, 'Category created successfully'));
   } catch (error) {
@@ -54,14 +60,21 @@ const updateCategory = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { id } = req.params;
     const { name } = req.body;
+    const categoryId = parseInt(id);
     connection = await getConnection();
-    
-    const updated = await CategoryModel.update(connection, parseInt(id), name);
+
+    // Check if category with this name already exists (excluding current category)
+    const existingCategory = await CategoryModel.findByName(connection, name, categoryId);
+    if (existingCategory) {
+      return res.status(400).json(errorResponse('Category with this name already exists'));
+    }
+
+    const updated = await CategoryModel.update(connection, categoryId, name);
     if (!updated) {
       return res.status(404).json(errorResponse('Category not found'));
     }
-    
-    res.json(successResponse({ id: parseInt(id), name }, 'Category updated successfully'));
+
+    res.json(successResponse({ id: categoryId, name }, 'Category updated successfully'));
   } catch (error) {
     console.error('Update category error:', error);
     res.status(500).json(errorResponse('Server error'));

@@ -18,6 +18,7 @@ const CategoryList: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState<number | null>(null);
   const [categoryName, setCategoryName] = useState('');
+  const [nameError, setNameError] = useState('');
 
   // Auto-pagination threshold
   const PAGINATION_THRESHOLD = 10;
@@ -34,12 +35,40 @@ const CategoryList: React.FC = () => {
   // Determine if pagination is being used
   const shouldUsePagination = pagination.totalPages > 1;
 
+  // Check for duplicate category names
+  const checkDuplicateName = (name: string) => {
+    if (!name.trim()) {
+      setNameError('');
+      return false;
+    }
+
+    const trimmedName = name.trim().toLowerCase();
+    const isDuplicate = categories.some(category =>
+      category.name.toLowerCase() === trimmedName &&
+      category.id !== editingCategory
+    );
+
+    if (isDuplicate) {
+      setNameError('A category with this name already exists');
+      return true;
+    } else {
+      setNameError('');
+      return false;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (!categoryName.trim()) {
       showError('Please enter a category name');
+      return;
+    }
+
+    // Check for duplicates before submitting
+    if (checkDuplicateName(categoryName)) {
+      showError('A category with this name already exists');
       return;
     }
 
@@ -58,12 +87,19 @@ const CategoryList: React.FC = () => {
         await showSuccess('Category created successfully!');
       }
 
+      // Refetch categories to update the list
+      setTimeout(() => {
+        dispatch(fetchCategoriesAuto(PAGINATION_THRESHOLD));
+      }, 100);
+
       setCategoryName('');
       setEditingCategory(null);
       setShowModal(false);
-    } catch (error) {
+    } catch (error: any) {
       hideLoading();
-      showError(editingCategory ? 'Failed to update category' : 'Failed to create category');
+      // Show specific error message from backend or fallback to generic message
+      const errorMessage = error.message || (editingCategory ? 'Failed to update category' : 'Failed to create category');
+      showError(errorMessage);
     }
   };
 
@@ -81,6 +117,9 @@ const CategoryList: React.FC = () => {
         await dispatch(deleteCategory(id)).unwrap();
         hideLoading();
         showSuccess('Category deleted successfully!');
+
+        // Refetch categories to update the list
+        dispatch(fetchCategoriesAuto(PAGINATION_THRESHOLD));
       }
     } catch (error) {
       hideLoading();
@@ -92,6 +131,14 @@ const CategoryList: React.FC = () => {
     setCategoryName('');
     setEditingCategory(null);
     setShowModal(false);
+    setNameError('');
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.target.value;
+    setCategoryName(newName);
+    // Check for duplicates in real-time
+    checkDuplicateName(newName);
   };
 
   const handleAddProduct = (categoryId: number) => {
@@ -130,7 +177,7 @@ const CategoryList: React.FC = () => {
         </div>
       ) : (
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
-          <ul className="divide-y divide-gray-200">
+          <ul className="divide-y divide-gray-200 max-h-[calc(100vh_-_20rem)] overflow-y-auto">
             {categories.map((category) => (
               <li key={category.id}>
                 <div className="px-4 py-4 flex items-center justify-between">
@@ -217,11 +264,18 @@ const CategoryList: React.FC = () => {
                     type="text"
                     id="categoryName"
                     value={categoryName}
-                    onChange={(e) => setCategoryName(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    onChange={handleNameChange}
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                      nameError
+                        ? 'border-red-300 focus:ring-red-500'
+                        : 'border-gray-300 focus:ring-indigo-500'
+                    }`}
                     placeholder="Enter category name"
                     required
                   />
+                  {nameError && (
+                    <p className="mt-1 text-sm text-red-600">{nameError}</p>
+                  )}
                 </div>
                 <div className="flex justify-end space-x-3">
                   <button
@@ -233,7 +287,12 @@ const CategoryList: React.FC = () => {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    disabled={!!nameError || !categoryName.trim()}
+                    className={`px-4 py-2 text-sm font-medium border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                      nameError || !categoryName.trim()
+                        ? 'text-gray-400 bg-gray-300 cursor-not-allowed'
+                        : 'text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500'
+                    }`}
                   >
                     {editingCategory ? 'Update' : 'Create'}
                   </button>

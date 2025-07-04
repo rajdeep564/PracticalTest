@@ -168,8 +168,9 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, edit
         hideLoading();
         await showSuccess('Product created successfully!');
       }
-      // Refresh categories to update product counts
+      // Refresh both products and categories to update the lists
       dispatch(fetchCategories());
+      // Note: ProductList will handle its own refetch via parent component
       onClose();
     } catch (error) {
       hideLoading();
