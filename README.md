@@ -197,12 +197,12 @@ The application comes with pre-configured test accounts:
 
 ### Admin Account
 - **Email**: `admin@gmail.com`
-- **Password**: `admin123`
+- **Password**: `123456`
 - **Permissions**: Full access to all features including category and product management
 
 ### User Account
 - **Email**: `user@gmail.com`
-- **Password**: `user123`
+- **Password**: `123456`
 - **Permissions**: Read-only access to dashboard and products
 
 ## 📚 API Documentation
