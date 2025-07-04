@@ -155,8 +155,8 @@ The frontend will run on `http://localhost:3000`
 ### 3. Access the Application
 - Open your browser and navigate to `http://localhost:3000`
 - Login with default credentials:
-  - **Admin**: `admin@gmail.com` / `admin123`
-  - **User**: `user@gmail.com` / `user123`
+  - **Admin**: `admin@gmail.com` / `123456`
+  - **User**: `user@gmail.com` / `123456`
 
 ## 📁 Project Structure
 
