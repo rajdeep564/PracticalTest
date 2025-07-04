@@ -97,7 +97,7 @@ cd ../frontend
 npm install
 ```
 
-## 🗄️ Database Setup
+## 🗄️ Database Setup (just run command npm run init-db)
 
 ### 1. Create MySQL Database
 ```sql
